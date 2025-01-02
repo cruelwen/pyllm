@@ -4,7 +4,7 @@ import logging
 FUNCTION_CALL_MAX_LOOP = 20
 
 class AgentBase(object):
-    "基础智能体，具备四则运算能力"
+    "基础智能体"
 
     def __init__(self, model=None, ak = None, url = None, system="", child_agents=[], maxloop=FUNCTION_CALL_MAX_LOOP ):
         self.llm = LLM(model=model, ak=ak, url=url)

@@ -27,6 +27,10 @@ def example_bots_chat():
         printc(f"B: {b_say}", color="green")
         a_say = llm.chat_with_context(b_say, ctx="bot_a")
         printc(f"A: {a_say}", color="blue")
+
+def example_interactive_chat():
+    agent = init_agent()
+    agent.interactive()
     
 def example_agent_basic():
     agent = init_agent()
@@ -47,7 +51,25 @@ def example_agent_basic():
                     })
     agent.chat("123+456*789=?")
 
+def example_agent_25():
+    agent = init_agent()
+    agent.register_tool(lambda expr: numexpr.evaluate(expr),
+                    name = "expr_calc",
+                    tool_desc = "计算数学表达式",
+                    para_desc = {
+                        "type": "object",
+                        "properties": {
+                            "expr": {"type": "string",
+                                    "description": "数学表达式"},
+                        },
+                        "required": ["expr"]
+                    })
+    agent.chat("3 3 7 7 四个数字，通过四则运算，得出25")
+
+
 if __name__ == "__main__":
     # example_hello_world()
     # example_bots_chat()
-    example_agent_basic()
+    # example_agent_basic()
+    # example_interactive_chat()
+    example_agent_25()

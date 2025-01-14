@@ -11,12 +11,13 @@ class OpenAIInitializationError(Exception):
     pass
 
 class LLM:
-    def __init__(self, model=None, ak=None, url=None):
+    def __init__(self, model=None, ak=None, url=None, system = ""):
         if model is None:
             self.default_model = "gpt-4o"   # 修改为 self.default_model
         else:
             self.default_model = model     # 确保 model 被赋值给 self.default_model
         self.init_openai(ak, url)
+        self.system = system
         self.context = {}
         self.tools = {}
     

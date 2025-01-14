@@ -1,5 +1,9 @@
 from pyllm.llm import LLM
 import logging
+from prompt_toolkit import PromptSession  
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.history import InMemoryHistory  
+from prompt_toolkit.completion import WordCompleter
 
 FUNCTION_CALL_MAX_LOOP = 20
 
@@ -18,6 +22,7 @@ class AgentBase(object):
         self.perpare_tool()
         
     def perpare_tool(self):
+        # 这只是一个例子，实际使用时请替换为实际的工具函数
         self.register_tool(lambda input_str: input_str,
                            name = "echo",
                            tool_desc = "回声",
@@ -76,3 +81,26 @@ class AgentBase(object):
             "role": "assistant",
             "content": answer})
         return answer,function_call_history
+
+    def interactive(self, prompt_index = ">>> "):
+        history = InMemoryHistory()
+        history.append_string("agent")
+        keywords = []
+        for i in self.llm.tools:
+            keywords.append(i)
+        agents_completer = WordCompleter(keywords)
+        
+        session = PromptSession(
+            history=history,
+            auto_suggest=AutoSuggestFromHistory(),
+            enable_history_search=True,
+        )
+
+        while True:
+            try:
+                text = session.prompt(prompt_index,completer=agents_completer)
+            except EOFError:
+                break
+            if text == "exit":
+                break
+            self.chat(text)
